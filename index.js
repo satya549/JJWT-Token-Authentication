@@ -19,6 +19,14 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/profile", verifyToken, (req, res) => {
+    
+})
+
+function verifyToken(req, res, next){
+
+}
+
 app.listen(4600, () => {
   console.log("server is running on http://www.localhost:4600");
 });
