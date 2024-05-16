@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const user = { id: 1, username: "dev", email: "dev@gmail.com" };
+  const user = { id: 12, username: "dev12", email: "dev@gmail.com" };
   jwt.sign({ user }, secretKey, { expiresIn: "300s" }, (err, token) => {
     res.json({
       token,
@@ -20,11 +20,30 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/profile", verifyToken, (req, res) => {
-    
-})
+  jwt.verify(req.token, secretKey, (err, authData) => {
+    if (err) {
+      res.send({ result: "invalid Token " });
+    } else {
+      res.json({
+        message: "Profil accessed",
+        authData,
+      });
+    }
+  });
+});
 
-function verifyToken(req, res, next){
-
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== "undefined") {
+    const bearer = bearerHeader.split(" ");
+    const token = bearer[1];
+    req.token = token;
+    next();
+  } else {
+    res.send({
+      result: "Token is not valid",
+    });
+  }
 }
 
 app.listen(4600, () => {
